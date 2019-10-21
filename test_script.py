@@ -28,7 +28,7 @@ class Answer:
 
 
 question_list = LinkedList()
-
+has_restarted = False
 while True:
     print("Welcome to the Quiz Generator. Please enter a name for the quiz you would like to create.")
     quiz_name = input()
@@ -64,8 +64,10 @@ while True:
 
             #Clears previsouly input answers
             if user_input == "restart":
+                has_restarted = True
                 question.answers = []
                 question_answers = []
+                break
             if user_input != "restart":
                 while True:
                     print("Please indicate the correct answer by typing the corresponding number.")
@@ -102,7 +104,10 @@ while True:
         if question_num == active_quiz.num_questions:
             active_quiz.questions = question_list
             break
-        current_question += 1
+        if not has_restarted:
+            current_question += 1
+        else:
+            has_restarted = False
     print("Finished")
     print("")
     print("")
