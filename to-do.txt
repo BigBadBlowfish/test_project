@@ -1,0 +1,11 @@
+To-Do List:
+-Currently, it is not possible to re-name a question after it is defined.
+-Need to match numbers to to user-defined answers to make selection easier.
+-Need to implement logic for catching invalid input for defining correct answers.
+-Implement functionality to allow users to define the number of answers per question.
+-Implement functionality to allow navigating backward and forward through quiz questions
+-Allow generation/access of multiple quizzes
+-Implement functionality to take/grade generated quizzes
+-Allow users to define different point values for different questions
+-Allow users to define grading thresholds for pass/fail
+-Implement functionality to save/load quizzes 
