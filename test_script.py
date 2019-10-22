@@ -1,5 +1,8 @@
 from node import *
 
+
+###Class and function declarations
+
 class Test:
     def __init__(self, name, num_questions, questions=None):
         self.name = name
@@ -14,6 +17,10 @@ class Question:
         self.question_num = question_num
         self.answers = answers
 
+    def get_question_num(self, value):
+        if self.question_num == value:
+            return self.question_num
+
 
 class Answer:
     def __init__(self, name, answer_num, is_correct=False):
@@ -26,39 +33,107 @@ class Answer:
 
 
 
+def blankspace(loop_num=2):
+    for i in range(loop_num):
+        print("")
+
+def generate_quiz():
+    blankspace()
+    print("Welcome to the Quiz Generator. Please enter a name for the quiz you would like to create.")
+    quiz_name = input()
+    print("Thank you. Please enter the number of questions you would like to create.")
+    blankspace()
+    quiz_num_questions = int(input())
+    active_quiz = Test(quiz_name, quiz_num_questions)
+    print("Thank you. Now, we will create the questions and answers for your quiz")
+    return active_quiz
+
+def generate_question(current_question=None):
+    blankspace()
+    print("Please type out question number " + str(current_question) + ".")
+    question_name = input()
+    question_num = current_question
+    question = Question(question_name, question_num)
+    return question
+
+def generate_answers(current_question=None):
+    question_answers = []
+    for i in range(question.num_answers):
+        answer_num = i + 1
+        print("Please enter possible answer number " + str(answer_num))
+        answer_name = input()
+        answer = Answer(answer_name, answer_num)
+        question_answers.append(answer)
+    question.answers = question_answers
+    return question_answers
+
+def print_active_quiz(active_quiz=None):
+    print("Okay, now we will display the entire quiz")
+    blankspace()
+    print("Quiz Name: " + active_quiz.name)
+    blankspace(1)
+    current_node = active_quiz.questions.head_node
+    for i in range(active_quiz.questions.list_length()):
+        print("Q: " + current_node.data.name)
+        for i in current_node.data.answers:
+            print ("A: " + i.name)
+        current_node = current_node.next_node
+
+
+def renaming_prompt(active_quiz=None):
+    rename = True
+    while rename == True:
+        print_active_quiz(active_quiz)
+        blankspace()
+        print("Would you like to edit any of this information? y/n")
+        user_input = input()
+        if user_input == "n":
+            rename = False
+        elif user_input == "y":
+            print("Quiz name: " + active_quiz.name)
+            print("Enter new quiz name, or enter 'n' to continue.")
+            user_input = input()
+            if user_input != 'n':
+                active_quiz.name = user_input
+                print("New quiz name: " + active_quiz.name)
+            print("If you would like to edit a question, please enter the question number.")
+            user_input = input()
+            current_node = active_quiz.questions.head_node
+            question_to_rename = None
+            for i in range(active_quiz.questions.list_length()):
+                current_question_num = current_node.data.get_question_num(i+1)
+                if str(current_question_num) == user_input:
+                    question_to_rename = current_question_num
+                    break
+                else:
+                    if current_node.has_next_node():
+                        current_node = current_node.next_node
+            new_question = generate_question(question_to_rename)
+            new_question.answers = generate_answers(new_question)   
+            current_node.data = new_question
+
+
+
+
+
+### Program starts here
+
 
 question_list = LinkedList()
 has_restarted = False
 while True:
-    print("Welcome to the Quiz Generator. Please enter a name for the quiz you would like to create.")
-    quiz_name = input()
-    print("Thank you. Please enter the number of questions you would like to create.")
-    quiz_num_questions = int(input())
-    active_quiz = Test(quiz_name, quiz_num_questions)
-    print("Thank you. Now, we will create the questions and answers for your quiz")
-    print("")
-    print("")
+    active_quiz = generate_quiz()
     current_question = 1
     while True:
-        print("Please type out question number " + str(current_question) + ".")
-        question_name = input()
-        question_num = current_question
-        question_answers = []
-        question = Question(question_name, question_num)
+        question = generate_question(current_question)
         while True:
-            for i in range(question.num_answers):
-                answer_num = i + 1
-                print("Please enter possible answer number " + str(answer_num))
-                answer_name = input()
-                answer = Answer(answer_name, answer_num)
-                question_answers.append(answer)
-            question.answers = question_answers
+            generate_answers()
             print("Thank you. We will now list the question followed by the answers you input.")
-            print("")
-            print("Q: " + question.name)
+            blankspace(1)
+            print("Question " + str(question.question_num) + ": " + question.name)
             for i in question.answers:
-                print("A: " + i.name)
-            print("")
+                print("A[" + str(i.answer_num) + "]: " + i.name)
+            blankspace(1)
             print("Does this look good? Type 'restart' to go back. Type anythign else to proceed.")
             user_input = input()
 
@@ -66,7 +141,6 @@ while True:
             if user_input == "restart":
                 has_restarted = True
                 question.answers = []
-                question_answers = []
                 break
             if user_input != "restart":
                 while True:
@@ -101,7 +175,7 @@ while True:
             if question.answers != []:
                 break
         
-        if question_num == active_quiz.num_questions:
+        if current_question == active_quiz.num_questions:
             active_quiz.questions = question_list
             break
         if not has_restarted:
@@ -109,23 +183,5 @@ while True:
         else:
             has_restarted = False
     print("Finished")
-    print("")
-    print("")
-    print("Okay, now we will display the entire quiz")
-    print("")
-    print("")
-    print("Quiz Name: " + active_quiz.name)
-    print("")
-    current_node = active_quiz.questions.head_node
-    for i in range(active_quiz.questions.list_length()):
-        print("Q: " + current_node.data.name)
-        for i in current_node.data.answers:
-            print ("A: " + i.name)
-        current_node = current_node.next_node
-    
-
-
-
-    
-
-        
+    blankspace()
+    renaming_prompt(active_quiz)

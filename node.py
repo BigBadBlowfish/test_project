@@ -24,6 +24,8 @@ class LinkedList:
                 self.tail_node = item
         return
 
+            
+
 
 
 class ListNode:
@@ -49,6 +51,12 @@ class ListNode:
             return self.prev_node
         else:
             return None
+    
+    def has_next_node(self):
+        if self.next_node is not None:
+            return True
+        else:
+            return False
 
     def has_value(self, value):
         if value == self.data:
