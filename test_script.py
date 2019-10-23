@@ -1,6 +1,5 @@
 from node import *
 
-
 ###Class and function declarations
 
 class Test:
@@ -8,7 +7,6 @@ class Test:
         self.name = name
         self.num_questions = num_questions
         self.questions = None
-
 
 class Question:
     def __init__(self, name, question_num, num_answers=4, answers=[]):
@@ -21,6 +19,10 @@ class Question:
         if self.question_num == value:
             return self.question_num
 
+    def get_correct_answer(self):
+        for answer in self.answers:
+            if answer.is_correct:
+                return answer
 
 class Answer:
     def __init__(self, name, answer_num, is_correct=False):
@@ -30,7 +32,6 @@ class Answer:
 
     def set_answer_correct(self):
         self.is_correct = True
-
 
 
 def blankspace(loop_num=2):
@@ -112,6 +113,19 @@ def renaming_prompt(active_quiz=None):
             new_question.answers = generate_answers(new_question)   
             current_node.data = new_question
 
+def generate_answer_key(quiz):
+    current_node = quiz.questions.head_node
+    answer_key = {}
+    question_num = 0
+    for i in range(quiz.questions.list_length()):
+        answer_key[current_node.data.question_num] = current_node.data.get_correct_answer()
+        current_node = current_node.next_node
+    for question_num, answer in answer_key.items():
+        print("Q: " + str(question_num) + " = " "A[" + str(answer.answer_num) + "]" )
+        print("Answer text: " + answer.name)
+    return answer_key
+        
+
 
 
 
@@ -184,4 +198,5 @@ while True:
             has_restarted = False
     print("Finished")
     blankspace()
-    renaming_prompt(active_quiz)
+    print(generate_answer_key(active_quiz))
+    #renaming_prompt(active_quiz)
