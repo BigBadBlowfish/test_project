@@ -1,4 +1,5 @@
 from node import *
+import pickle
 
 ###Class and function declarations
 
@@ -7,6 +8,12 @@ class Test:
         self.name = name
         self.num_questions = num_questions
         self.questions = None
+    
+    def save(self):
+        file_name = self.name + ".pickle"
+        pickle_out = open(file_name, "wb")
+        pickle.dump(self, pickle_out)
+        pickle_out.close()
 
 class Question:
     def __init__(self, name, question_num, num_answers=4, answers=[]):
@@ -125,6 +132,10 @@ def generate_answer_key(quiz):
         print("Answer text: " + answer.name)
     return answer_key
         
+def load_from_file(filename):
+    pickle_in = open(filename, "rb")
+    loaded_file = pickle.load(pickle_in)
+    return loaded_file
 
 
 
@@ -135,7 +146,15 @@ def generate_answer_key(quiz):
 
 question_list = LinkedList()
 has_restarted = False
-while True:
+
+loaded_quiz = load_from_file("Test.pickle")
+print_active_quiz(loaded_quiz)
+
+
+
+
+
+while False:
     active_quiz = generate_quiz()
     current_question = 1
     while True:
@@ -196,7 +215,9 @@ while True:
             current_question += 1
         else:
             has_restarted = False
+    active_quiz.save()
     print("Finished")
+
     blankspace()
-    print(generate_answer_key(active_quiz))
+    #print(generate_answer_key(active_quiz))
     #renaming_prompt(active_quiz)
